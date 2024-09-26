@@ -1,21 +1,21 @@
-FROM python:3.6-alpine
+# Use an official Python runtime as a parent image
+FROM python:3.9
 
-ENV FLASK_APP flasky.py
-ENV FLASK_CONFIG production
+# Set the working directory in the container
+WORKDIR /app1
 
-RUN adduser -D flasky
-USER flasky
+# Copy the current directory contents into the container at /app
+COPY . /app1
 
-WORKDIR /home/flasky
+# Install any necessary dependencies specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY requirements requirements
-RUN python -m venv venv
-RUN venv/bin/pip install -r requirements/docker.txt
-
-COPY app app
-COPY migrations migrations
-COPY flasky.py config.py boot.sh ./
-
-# run-time configuration
+# Expose the port the app runs on (Flask default is 5000)
 EXPOSE 5000
-ENTRYPOINT ["./boot.sh"]
+
+# Set environment variables for Flask
+ENV FLASK_APP=hello.py
+ENV FLASK_RUN_HOST=0.0.0.0
+
+# Run the application
+CMD ["flask", "run"]
